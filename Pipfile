@@ -9,6 +9,9 @@ autopep8 = "*"
 
 [packages]
 beautifulsoup4 = "*"
+pandas = "*"
+matplotlib = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.7"

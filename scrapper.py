@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup as bs
 from urllib.request import urlopen
+import matplotlib.pyplot as plt
+import numpy as np
 
 SHOW_ID = "tt0944947"
 SHOW_URL = f'https://www.imdb.com/title/{SHOW_ID}/episodes'
@@ -29,10 +31,24 @@ def get_season_ratings(season_url):
     RATINGS[season_number] = []
     for episode in episodes:
         rating = episode.find("span", class_="ipl-rating-star__rating")
-        RATINGS[season_number].append(rating.string)
+        RATINGS[season_number].append(float(rating.string))
+
+
+def make_graph():
+    plt.xlabel('Episodes')
+    plt.ylabel('Ratings')
+    plt.yticks(np.arange(4, 10.5, step=0.5))
+    plt.xticks(np.arange(1, 11))
+    legends = []
+    for season, ratings in RATINGS.items():
+        plt.plot(range(1, len(ratings) + 1), ratings)
+        legends.append(f'Season {season}')
+    plt.legend(legends)
+    plt.show()
 
 
 seasons = get_seasons()
 for season in seasons:
     get_season_ratings(season)
-print(RATINGS)
+
+make_graph()
