@@ -7,6 +7,8 @@ SHOW_ID = "tt0944947"
 SHOW_URL = f'https://www.imdb.com/title/{SHOW_ID}/episodes'
 RATINGS = {}
 
+print("Visualizing the decline of GOT")
+
 
 def get_seasons():
     seasons_page = urlopen(SHOW_URL)
@@ -22,6 +24,7 @@ def get_seasons():
 
 
 def get_season_ratings(season_url):
+    print(f'Getting: {season_url}')
     season_number = season_url[-1:]
     season_page = urlopen(season_url)
     html = season_page.read()
@@ -35,16 +38,18 @@ def get_season_ratings(season_url):
 
 
 def make_graph():
+    print("Making Graph")
     plt.xlabel('Episodes')
     plt.ylabel('Ratings')
-    plt.yticks(np.arange(4, 10.5, step=0.5))
-    plt.xticks(np.arange(1, 11))
     legends = []
     for season, ratings in RATINGS.items():
         plt.plot(range(1, len(ratings) + 1), ratings)
         legends.append(f'Season {season}')
+    plt.xticks(np.arange(1, 11))
+    plt.yticks(np.arange(4.5, 10.5, 0.5),)
     plt.legend(legends)
     plt.show()
+    print("Done!")
 
 
 seasons = get_seasons()
