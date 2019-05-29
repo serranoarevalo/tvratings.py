@@ -48,9 +48,7 @@ def make_graph():
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
-    img = Image.open(buf)
-    buf.close()
-    return img
+    return buf
 
 
 def main(show_id):
