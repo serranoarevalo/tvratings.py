@@ -9,4 +9,4 @@ Just wanted to be able to visualize the decline of Game of Thrones
 ## To Do:
 
 
-- [ ] Find longest season and adjust plot
+- [ ] Better way to handle ratings

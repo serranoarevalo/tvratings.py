@@ -5,8 +5,6 @@ from urllib.request import urlopen
 import matplotlib.pyplot as plt
 import numpy as np
 
-RATINGS = {}
-
 
 def get_info(show_url):
     seasons_page = urlopen(show_url)
@@ -31,19 +29,20 @@ def get_season_ratings(season_url):
     season_page.close()
     season_bs = bs(html, "html.parser")
     episodes = season_bs.find_all("div", class_="list_item")
-    RATINGS[season_number] = []
+    ratings = []
     for episode in episodes:
         rating = episode.find("span", class_="ipl-rating-star__rating")
         if rating:
-            RATINGS[season_number].append(float(rating.string))
+            ratings.append(float(rating.string))
+    return ratings
 
 
-def make_graph(title):
+def make_graph(title, the_ratings):
     plt.xlabel('Episodes')
     plt.ylabel('Ratings')
     legends = []
     longest = 0
-    for season, ratings in RATINGS.items():
+    for season, ratings in the_ratings.items():
         if len(ratings) > longest:
             longest = len(ratings)
         if len(ratings) is not 0:
@@ -62,7 +61,9 @@ def make_graph(title):
 def main(show_id):
     show_url = f'https://www.imdb.com/title/{show_id}/episodes'
     seasons, title = get_info(show_url)
+    ratings = {}
     for season in seasons:
-        get_season_ratings(season)
-    img = make_graph(title)
+        season_ratings = get_season_ratings(season)
+        ratings[season[-1:]] = season_ratings
+    img = make_graph(title, ratings)
     return img
