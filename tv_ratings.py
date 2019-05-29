@@ -8,17 +8,19 @@ import numpy as np
 RATINGS = {}
 
 
-def get_seasons(show_url):
+def get_info(show_url):
     seasons_page = urlopen(show_url)
     html = seasons_page.read()
     seasons_page.close()
     seasons_bs = bs(html, "html.parser")
     season_count = seasons_bs.find(id="bySeason").find_all("option")
+    title = seasons_bs.find(
+        "div", class_="subpage_title_block").find("h3").find("a")
     seasons = []
     for i in range(1, len(season_count) + 1):
         url = f'{show_url}?season={i}'
         seasons.append(url)
-    return seasons
+    return (seasons, title.string)
 
 
 def get_season_ratings(season_url):
@@ -32,19 +34,22 @@ def get_season_ratings(season_url):
     RATINGS[season_number] = []
     for episode in episodes:
         rating = episode.find("span", class_="ipl-rating-star__rating")
-        RATINGS[season_number].append(float(rating.string))
+        if rating:
+            RATINGS[season_number].append(float(rating.string))
 
 
-def make_graph():
+def make_graph(title):
     plt.xlabel('Episodes')
     plt.ylabel('Ratings')
     legends = []
     for season, ratings in RATINGS.items():
-        plt.plot(range(1, len(ratings) + 1), ratings)
-        legends.append(f'Season {season}')
+        if len(ratings) is not 0:
+            plt.plot(range(1, len(ratings) + 1), ratings)
+            legends.append(f'Season {season}')
     plt.xticks(np.arange(1, 11))
-    plt.yticks(np.arange(4.5, 10.5, 0.5),)
+    plt.yticks(np.arange(0, 10.5, 0.5),)
     plt.legend(legends)
+    plt.title(title)
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
@@ -53,8 +58,8 @@ def make_graph():
 
 def main(show_id):
     show_url = f'https://www.imdb.com/title/{show_id}/episodes'
-    seasons = get_seasons(show_url)
+    seasons, title = get_info(show_url)
     for season in seasons:
         get_season_ratings(season)
-    img = make_graph()
+    img = make_graph(title)
     return img
