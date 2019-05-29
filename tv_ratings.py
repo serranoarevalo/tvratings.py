@@ -42,11 +42,14 @@ def make_graph(title):
     plt.xlabel('Episodes')
     plt.ylabel('Ratings')
     legends = []
+    longest = 0
     for season, ratings in RATINGS.items():
+        if len(ratings) > longest:
+            longest = len(ratings)
         if len(ratings) is not 0:
             plt.plot(range(1, len(ratings) + 1), ratings)
             legends.append(f'Season {season}')
-    plt.xticks(np.arange(1, 11))
+    plt.xticks(np.arange(1, longest + 1))
     plt.yticks(np.arange(0, 10.5, 0.5),)
     plt.legend(legends)
     plt.title(title)
