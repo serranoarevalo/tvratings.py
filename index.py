@@ -12,4 +12,6 @@ def index(path):
         return Response('Add the IMDB\'s show ID you want to the URL, for example: <a href="/?showId=tt0944947">/?showId=tt0944947</a> for Game of Thrones')
     else:
         image = main(show_id)
-        return Response(image, mimetype="image/jpg")
+        response = Response(image, mimetype="image/jpg")
+        response.headers["Cache-control"] = "max-age=604800, public"
+        return response
