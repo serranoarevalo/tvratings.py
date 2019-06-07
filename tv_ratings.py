@@ -22,7 +22,6 @@ def get_info(show_url):
 
 
 def get_season_ratings(season_url):
-    print(f'Getting: {season_url}')
     season_number = season_url[-1:]
     season_page = urlopen(season_url)
     html = season_page.read()
